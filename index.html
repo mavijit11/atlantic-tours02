@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ask Atlantic | Atlantic Coast Tours</title>
+
+<style>
+:root {
+  --navy: #082b40;
+  --navy2: #124b62;
+  --teal: #36b9a0;
+  --mint: #bdf5df;
+  --white: #ffffff;
+  --bg: #edf6f5;
+  --text: #173847;
+  --muted: #8299a4;
+  --border: rgba(255,255,255,.3);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  font-family: Inter, "Segoe UI", sans-serif;
+  color: var(--text);
+  background: linear-gradient(135deg, #e1f5ef, #d7eaf2, #f2f7f5);
+  overflow: hidden;
+}
+
+/* Animated ocean background */
+
+.ocean {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: .55;
+  animation: float 15s infinite alternate ease-in-out;
+}
+
+.blob.one {
+  background: #8fe5cf;
+  width: 400px;
+  height: 400px;
+  top: -100px;
+  left: -100px;
+}
+
+.blob.two {
+  background: #83c9e8;
+  width: 500px;
+  height: 500px;
+  right: -150px;
+  bottom: -150px;
+  animation-delay: -5s;
+}
+
+.blob.three {
+  background: #d4f0c4;
+  width: 300px;
+  height: 300px;
+  left: 45%;
+  top: 35%;
+  animation-delay: -8s;
+}
+
+@keyframes float {
+  from { transform: translate(0,0) scale(1); }
+  to { transform: translate(70px,-50px) scale(1.2); }
+}
+
+/* Main application */
+
+.app {
+  display: flex;
+  width: min(1250px, 96vw);
+  height: min(900px, 94vh);
+  margin: 3vh auto;
+  border-radius: 28px;
+  overflow: hidden;
+  background: rgba(255,255,255,.76);
+  backdrop-filter: blur(25px);
+  border: 1px solid rgba(255,255,255,.7);
+  box-shadow: 0 30px 100px rgba(8,43,64,.18);
+}
+
+/* Sidebar */
+
+.sidebar {
+  width: 260px;
+  background: linear-gradient(180deg, #082b40, #0d3d52);
+  color: white;
+  padding: 28px 22px;
+  display: flex;
+  flex-direction: column;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 35px;
+}
+
+.brand-icon {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #72e4c4, #35b6a0);
+  border-radius: 15px;
+  font-size: 25px;
+  box-shadow: 0 6px 25px rgba(53,182,160,.3);
+}
+
+.brand h2 {
+  font-size: 19px;
+  letter-spacing: -.5px;
+}
+
+.brand small {
+  color: #9fc5d1;
+  font-size: 10px;
+  display: block;
+  margin-top: 4px;
+  letter-spacing: 1px;
+}
+
+.new-chat {
+  background: rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.15);
+  color: white;
+  padding: 13px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: .25s;
+}
+
+.new-chat:hover {
+  background: rgba(255,255,255,.2);
+  transform: translateY(-2px);
+}
+
+.sidebar-label {
+  color: #85adbd;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  margin: 32px 0 15px;
+}
+
+.topic {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 10px;
+  color: #d3e7ee;
+  font-size: 12px;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.topic:hover {
+  background: rgba(255,255,255,.1);
+  color: white;
+}
+
+.sidebar-bottom {
+  margin-top: auto;
+  border-top: 1px solid rgba(255,255,255,.12);
+  padding-top: 20px;
+  color: #a5c5d0;
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+/* Main chat */
+
+.main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 22px 30px;
+  border-bottom: 1px solid rgba(8,43,64,.08);
+}
+
+.topbar-title {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: #328c77;
+  background: #e6f8f0;
+  padding: 8px 12px;
+  border-radius: 30px;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  background: #38c58b;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  50% { box-shadow: 0 0 0 6px rgba(56,197,139,.15); }
+}
+
+.chat {
+  flex: 1;
+  overflow-y: auto;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  scroll-behavior: smooth;
+}
+
+/* Welcome */
+
+.welcome {
+  margin: auto;
+  max-width: 650px;
+  text-align: center;
+  animation: enter .7s ease;
+}
+
+@keyframes enter {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero-icon {
+  width: 90px;
+  height: 90px;
+  margin: 0 auto 25px;
+  display: grid;
+  place-items: center;
+  font-size: 44px;
+  border-radius: 28px;
+  background: linear-gradient(135deg, #c3f6e6, #b3dff0);
+  box-shadow: 0 15px 40px rgba(30,145,130,.15);
+  animation: heroFloat 4s infinite ease-in-out;
+}
+
+@keyframes heroFloat {
+  50% { transform: translateY(-8px) rotate(2deg); }
+}
+
+.welcome h1 {
+  font-size: clamp(28px, 4vw, 44px);
+  color: var(--navy);
+  letter-spacing: -1.5px;
+  line-height: 1.15;
+}
+
+.welcome h1 span {
+  background: linear-gradient(90deg, #20a88d, #3189bc);
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.welcome p {
+  color: #718994;
+  font-size: 14px;
+  line-height: 1.8;
+  margin: 18px auto 30px;
+  max-width: 440px;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  text-align: left;
+}
+
+.card {
+  padding: 18px;
+  border: 1px solid rgba(8,43,64,.08);
+  background: rgba(255,255,255,.8);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: .25s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  border-color: #80d9c0;
+  box-shadow: 0 12px 30px rgba(20,100,90,.1);
+}
+
+.card-icon {
+  font-size: 22px;
+  margin-bottom: 12px;
+}
+
+.card h3 {
+  font-size: 13px;
+  color: var(--navy);
+  margin-bottom: 5px;
+}
+
+.card p {
+  font-size: 11px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Messages */
+
+.message {
+  display: flex;
+  gap: 12px;
+  max-width: 85%;
+  animation: enter .3s ease;
+}
+
+.message.user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.avatar {
+  width: 35px;
+  height: 35px;
+  border-radius: 12px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  background: #d8f4e9;
+  font-size: 17px;
+}
+
+.user .avatar {
+  background: var(--navy);
+  color: white;
+  font-size: 12px;
+}
+
+.content {
+  min-width: 0;
+}
+
+.bubble {
+  padding: 15px 18px;
+  border-radius: 18px;
+  line-height: 1.7;
+  font-size: 13px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.bot .bubble {
+  background: white;
+  border: 1px solid rgba(8,43,64,.07);
+  border-top-left-radius: 5px;
+  box-shadow: 0 5px 20px rgba(8,43,64,.04);
+}
+
+.user .bubble {
+  background: linear-gradient(135deg, #0a354c, #17677b);
+  color: white;
+  border-top-right-radius: 5px;
+}
+
+.meta {
+  font-size: 10px;
+  color: #91a4ac;
+  margin: 7px 4px;
+}
+
+.error .bubble {
+  background: #fff0ef;
+  color: #a32c2c;
+}
+
+/* Typing animation */
+
+.typing {
+  display: flex;
+  gap: 5px;
+  padding: 18px;
+}
+
+.typing span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #45b9a0;
+  animation: typing 1s infinite;
+}
+
+.typing span:nth-child(2) { animation-delay: .15s; }
+.typing span:nth-child(3) { animation-delay: .3s; }
+
+@keyframes typing {
+  0%, 60%, 100% { transform: translateY(0); opacity: .4; }
+  30% { transform: translateY(-6px); opacity: 1; }
+}
+
+/* Input */
+
+.input-area {
+  padding: 20px 30px 15px;
+  border-top: 1px solid rgba(8,43,64,.08);
+  background: rgba(255,255,255,.6);
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  padding: 7px;
+  border-radius: 17px;
+  background: white;
+  border: 1px solid #e0ece9;
+  box-shadow: 0 5px 20px rgba(8,43,64,.05);
+  transition: .2s;
+}
+
+.input-wrapper:focus-within {
+  border-color: #58c7aa;
+  box-shadow: 0 0 0 4px rgba(88,199,170,.12);
+}
+
+input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 13px;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.send {
+  border: none;
+  color: white;
+  background: linear-gradient(135deg, #0b354a, #167e83);
+  padding: 13px 22px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 12px;
+  transition: .2s;
+}
+
+.send:hover {
+  transform: scale(1.04);
+  box-shadow: 0 5px 20px rgba(20,120,120,.2);
+}
+
+.send:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #9baeb5;
+  padding: 12px 3px 0;
+}
+
+/* Responsive */
+
+@media(max-width: 750px) {
+  body { overflow: auto; }
+
+  .app {
+    width: 100%;
+    height: 100dvh;
+    margin: 0;
+    border-radius: 0;
+  }
+
+  .sidebar { display: none; }
+
+  .topbar { padding: 17px 20px; }
+
+  .chat { padding: 20px 15px; }
+
+  .input-area { padding: 12px 15px; }
+
+  .message { max-width: 95%; }
+
+  .welcome h1 { font-size: 32px; }
+
+  .cards { gap: 8px; }
+
+  .card { padding: 13px; }
+
+  .footer { justify-content: center; }
+}
+
+@media(max-width: 380px) {
+  .cards { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="ocean">
+  <div class="blob one"></div>
+  <div class="blob two"></div>
+  <div class="blob three"></div>
+</div>
+
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-icon">🌊</div>
+      <div>
+        <h2>Ask Atlantic</h2>
+        <small>ATLANTIC COAST TOURS</small>
+      </div>
+    </div>
+
+    <button class="new-chat" onclick="newChat()">＋ New conversation</button>
+
+    <div class="sidebar-label">EXPLORE IRELAND</div>
+
+    <div class="topic" onclick="ask('What tours are available?')">🌿 All experiences</div>
+    <div class="topic" onclick="ask('Show me the cheapest tours')">💶 Budget adventures</div>
+    <div class="topic" onclick="ask('Which tours have availability?')">📅 Availability</div>
+    <div class="topic" onclick="ask('Tell me about the tour locations')">📍 Destinations</div>
+
+    <div class="sidebar-bottom">
+      ☘️ Made for curious travellers.<br>
+      Discover the magic of Ireland's west coast.
+    </div>
+  </aside>
+
+  <section class="main">
+
+    <header class="topbar">
+      <div class="topbar-title">Your Irish adventure starts here</div>
+      <div class="status">
+        <span class="status-dot"></span>
+        Live tour data
+      </div>
+    </header>
+
+    <main class="chat" id="chat">
+
+      <div class="welcome" id="welcome">
+        <div class="hero-icon">🌊</div>
+
+        <h1>Discover Ireland.<br><span>Follow the Atlantic.</span></h1>
+
+        <p>
+          From breathtaking coastal journeys to unforgettable
+          local experiences, let's find your next adventure.
+        </p>
+
+        <div class="cards">
+          <div class="card" onclick="ask('What tours are available?')">
+            <div class="card-icon">🗺️</div>
+            <h3>Explore experiences</h3>
+            <p>Discover all available tours.</p>
+          </div>
+
+          <div class="card" onclick="ask('What are the tour prices?')">
+            <div class="card-icon">💶</div>
+            <h3>Tour prices</h3>
+            <p>Find your perfect adventure.</p>
+          </div>
+
+          <div class="card" onclick="ask('Which tours have the most slots available?')">
+            <div class="card-icon">📅</div>
+            <h3>Check availability</h3>
+            <p>Find tours with open slots.</p>
+          </div>
+
+          <div class="card" onclick="ask('Recommend a tour for me')">
+            <div class="card-icon">✨</div>
+            <h3>Find my adventure</h3>
+            <p>Let's discover something special.</p>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <form class="input-area" id="form">
+      <div class="input-wrapper">
+        <input
+          id="question"
+          placeholder="Ask anything about your Irish adventure..."
+          autocomplete="off"
+          required
+        >
+        <button class="send" id="send" type="submit">Send ↗</button>
+      </div>
+
+      <div class="footer">
+        <span>🌿 Atlantic Coast Tours</span>
+        <span>Powered by live tour information</span>
+      </div>
+    </form>
+
+  </section>
+</div>
+
+<script>
+const CSV_URL =
+"https://docs.google.com/spreadsheets/d/1balBGf8QhZ5dc-RCCAPt2kcrcf6m_YRh0HL_r8bBtJw/export?format=csv";
+
+const BRAIN_URL = "https://luas-class.kluxy.app/chat";
+
+const SYSTEM =
+"You are Ask Atlantic, the customer assistant for Atlantic Coast Tours. Answer only from the live data you are given. Quote exact prices in euro and slots left. If something is not in the data, say so. If a value looks implausible, say so and suggest the customer checks with staff. Be warm and brief.";
+
+const chat = document.getElementById("chat");
+const input = document.getElementById("question");
+const send = document.getElementById("send");
+const form = document.getElementById("form");
+const welcome = document.getElementById("welcome");
+
+function timeNow() {
+  return new Date().toLocaleTimeString("en-IE", {
+    hour12: false,
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit"
+  });
+}
+
+function addMessage(text, role, meta = "", error = false) {
+  const message = document.createElement("div");
+  message.className = "message " + role;
+
+  const avatar = document.createElement("div");
+  avatar.className = "avatar";
+  avatar.textContent = role === "bot" ? "🌊" : "YOU";
+
+  const content = document.createElement("div");
+  content.className = "content";
+
+  const bubble = document.createElement("div");
+  bubble.className = "bubble";
+
+  if (error) message.classList.add("error");
+
+  bubble.textContent = text;
+
+  content.appendChild(bubble);
+
+  if (meta) {
+    const metadata = document.createElement("div");
+    metadata.className = "meta";
+    metadata.textContent = meta;
+    content.appendChild(metadata);
+  }
+
+  message.appendChild(avatar);
+  message.appendChild(content);
+
+  chat.appendChild(message);
+  chat.scrollTop = chat.scrollHeight;
+
+  return message;
+}
+
+function showTyping() {
+  const message = document.createElement("div");
+  message.className = "message bot";
+  message.id = "typing";
+
+  const avatar = document.createElement("div");
+  avatar.className = "avatar";
+  avatar.textContent = "🌊";
+
+  const content = document.createElement("div");
+  content.className = "content";
+
+  const bubble = document.createElement("div");
+  bubble.className = "bubble typing";
+  bubble.innerHTML = "<span></span><span></span><span></span>";
+
+  const meta = document.createElement("div");
+  meta.className = "meta";
+  meta.textContent = "Ask Atlantic is thinking...";
+
+  content.appendChild(bubble);
+  content.appendChild(meta);
+
+  message.appendChild(avatar);
+  message.appendChild(content);
+
+  chat.appendChild(message);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function removeTyping() {
+  document.getElementById("typing")?.remove();
+}
+
+async function ask(question) {
+  question = question.trim();
+  if (!question || send.disabled) return;
+
+  welcome.style.display = "none";
+
+  addMessage(question, "user");
+
+  input.value = "";
+  input.disabled = true;
+  send.disabled = true;
+
+  showTyping();
+
+  try {
+    // Fetch fresh CSV on every question.
+    const csvResponse = await fetch(CSV_URL, {
+      cache: "no-store"
+    });
+
+    if (!csvResponse.ok) {
+      throw new Error("Could not fetch live catalogue: HTTP " +
+        csvResponse.status);
+    }
+
+    const csv = await csvResponse.text();
+
+    if (!csv.trim()) {
+      throw new Error("The tour catalogue is empty.");
+    }
+
+    // Send the question and CSV to the class brain.
+    const response = await fetch(BRAIN_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        system: SYSTEM,
+        messages: [{
+          role: "user",
+          content:
+            "Live data (CSV):\n" + csv +
+            "\n\nCustomer question: " + question
+        }]
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error("Assistant error: HTTP " + response.status);
+    }
+
+    const data = await response.json();
+
+    if (typeof data.reply !== "string") {
+      throw new Error("Invalid assistant response.");
+    }
+
+    removeTyping();
+
+    addMessage(
+      data.reply,
+      "bot",
+      "✓ Data fetched live at " + timeNow()
+    );
+
+  } catch (error) {
+    removeTyping();
+
+    addMessage(
+      "Sorry! " + error.message +
+      "\n\nPlease try again in a moment.",
+      "bot",
+      "Connection issue",
+      true
+    );
+
+    console.error(error);
+
+  } finally {
+    input.disabled = false;
+    send.disabled = false;
+    input.focus();
+  }
+}
+
+form.addEventListener("submit", function(event) {
+  event.preventDefault();
+  ask(input.value);
+});
+
+function newChat() {
+  chat.innerHTML = "";
+  welcome.style.display = "";
+  chat.appendChild(welcome);
+  input.value = "";
+  input.focus();
+}
+
+</script>
+
+</body>
+</html>
